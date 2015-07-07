@@ -14,6 +14,7 @@ Contents:
    setup.rst
    solr-gui.rst
    collective-solr.rst
+   solr-configuration.rst
 
 
 Indices and tables

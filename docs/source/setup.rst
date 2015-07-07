@@ -140,6 +140,10 @@ Index::
 
 https://wiki.apache.org/solr/SchemaXml#Common_field_options
 
+Plone and Solr
+**************
+
+Activate Solr in Plone::
 
 - Create Plone instance with collective.solr installed
 - Go to: "Configuration" -> "Solr Settings"

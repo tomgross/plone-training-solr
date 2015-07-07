@@ -30,19 +30,20 @@ Sorting "sort"::
     "Date asc"
     "Date desc"
 
-Filter List "fl":
+Filter List "fl"::
 
     Title,Type
 
 This parameter can be used to specify a set of fields to return, limiting the amount of information in the response.
 
-- Response Writer "wt":
+Response Writer "wt"::
 
   "json"
 
 A Response Writer generates the formatted response of a search.
 
-Solr URL Query::
+Solr Query via URL
+******************
 
 Copy query from Solr GUI, e.g.::
 
@@ -74,7 +75,7 @@ Fuzzy Search::
 
     "house0.6"
 
-Proximity Search:
+Proximity Search::
 
     "'apache solr'2"
 

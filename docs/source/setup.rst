@@ -7,9 +7,9 @@ Buildout
 Bootstrap project::
 
   $ mkdir plone-training-solr
-  $ cd solr-training
+  $ cd plone-training-solr
   $ wget https://bootstrap.pypa.io/bootstrap-buildout.py
-  $ wget https://raw.githubusercontent.com/collective/collective.solr/master/solr.cfg
+  $ wget https://raw.githubusercontent.com/collective/collective.solr/json-api/solr.cfg
 
 
 Create Buildout (buildout.cfg)::
@@ -35,7 +35,7 @@ Create Buildout (buildout.cfg)::
 
 Run buildout::
 
-  $ python2.7 bootstrap.py
+  $ python2.7 bootstrap-buildout.py
   $ bin/buildout
 
 Start Plone::

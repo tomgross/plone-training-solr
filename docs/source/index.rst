@@ -15,6 +15,8 @@ Contents:
    solr-gui.rst
    collective-solr.rst
    solr-configuration.rst
+   json-api.rst
+   solr-testing.rst
 
 
 Indices and tables

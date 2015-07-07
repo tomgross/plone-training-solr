@@ -16,31 +16,6 @@ solr.cfg::
     default-core-name = collection1
 
 
-Solr Import Handler
-*******************
-
-solr.cfg::
-
-    [solr-geolocations-import]
-    recipe = collective.recipe.template
-    input = inline:
-      #!/bin/sh
-      # Delete all data
-      curl http://${settings:solr-host}:${settings:solr-port}/solr/solr-core-geospatial/update?commit=true -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
-      # Import data
-      curl http://${settings:solr-host}:${settings:solr-port}/solr/solr-core-geospatial/update/csv?commit=true --data-binary @etc/geolocations.csv -H 'Content-type:text/csv; charset=utf-8'
-    output = ${buildout:directory}/bin/solr-geolocations-import
-    mode = 755
-
-geolocations.csv::
-
-    "location","geolocation"
-    "01067 Dresden","51.057379, 13.715954"
-    "01069 Dresden","51.04931, 13.744873"
-    "01097 Dresden","51.060424, 13.745002"
-    ...
-
-
 Stopwords
 *********
 
@@ -259,10 +234,62 @@ solr.cfg::
         </requestHandler>
 
 
-Geospatial Autocomplete
-***********************
+Solr Import Handler
+*******************
 
-Not fully working yet! Needs some collective.solr mangler fixes.
+solr.cfg::
+
+    [solr]
+    recipe = collective.recipe.solrinstance:mc
+    additional-solrconfig =
+      <!-- Generate a unique key when creating documents in solr -->
+      <requestHandler name="/update" class="solr.UpdateRequestHandler">
+        <lst name="defaults">
+          <str name="update.chain">uuid</str>
+        </lst>
+      </requestHandler>
+
+      <!-- Generate a unique key when importing documents from csv in solr -->
+      <requestHandler name="/update/csv" class="solr.UpdateRequestHandler">
+        <lst name="defaults">
+          <str name="update.chain">uuid</str>
+        </lst>
+      </requestHandler>
+
+      <updateRequestProcessorChain name="uuid">
+        <processor class="solr.UUIDUpdateProcessorFactory">
+          <str name="fieldName">id</str>
+        </processor>
+        <processor class="solr.RunUpdateProcessorFactory" />
+      </updateRequestProcessorChain>
+
+
+    [solr-geolocations-import]
+    recipe = collective.recipe.template
+    input = inline:
+      #!/bin/sh
+      # Delete all data
+      curl http://${settings:solr-host}:${settings:solr-port}/solr/solr-core-geospatial/update?commit=true -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
+      # Import data
+      curl http://${settings:solr-host}:${settings:solr-port}/solr/solr-core-geospatial/update/csv?commit=true --data-binary @etc/geolocations.csv -H 'Content-type:text/csv; charset=utf-8'
+    output = ${buildout:directory}/bin/solr-geolocations-import
+    mode = 755
+
+
+geolocations.csv::
+
+    "location","geolocation"
+    "01067 Dresden","51.057379, 13.715954"
+    "01069 Dresden","51.04931, 13.744873"
+    "01097 Dresden","51.060424, 13.745002"
+    ...
+
+
+Geospatial Search (with Autocomplete)
+*************************************
+
+Works just when querying Solr directly. collective.solr needs some minor
+fixes. See https://github.com/collective/collective.solr/tree/spatial-filters.
 
 solr.cfg::
 

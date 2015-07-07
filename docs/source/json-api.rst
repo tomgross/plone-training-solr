@@ -227,12 +227,12 @@ URL::
 
 Response::
 
-[
-    {
-        "value": "Willkommen bei Plone",
-        "label": "Willkommen bei Plone"
-    }
-]
+    [
+        {
+            "value": "Willkommen bei Plone",
+            "label": "Willkommen bei Plone"
+        }
+    ]
 
 
 

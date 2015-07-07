@@ -22,7 +22,7 @@ Stopwords
 solr.cfg::
 
     [solr]
-    recipe = collective.recipe.solrinstance:mc
+    recipe = collective.recipe.solrinstance
     filter =
         text solr.StopFilterFactory ignoreCase="true" words="${buildout:directory}/etc/stopwords.txt"
 

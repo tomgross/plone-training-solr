@@ -1,62 +1,69 @@
 Set up Plone and Solr
-------------------------------------------------------------------------------
+=====================
 
-Buildout
-********
+For using Solr with Plone you need two things:
+
+ 1) A running Solr server
+ 2) A integration product (like collective.solr) for delegation of indexing
+    and searching to the Solr server. In this training we will focus on
+    collective.solr for this purpose.
 
 Bootstrap project::
 
   $ mkdir plone-training-solr
   $ cd plone-training-solr
-  $ wget https://bootstrap.pypa.io/bootstrap-buildout.py
-  $ wget https://raw.githubusercontent.com/collective/collective.solr/json-api/solr.cfg
+  $ curl -O https://bootstrap.pypa.io/bootstrap-buildout.py
+  $ curl -O https://raw.githubusercontent.com/collective/collective.solr/master/solr.cfg
+  $ curl -o plone5.cfg https://raw.githubusercontent.com/collective/minimalplone5/master/buildout.cfg
 
 
-Create Buildout (buildout.cfg)::
+a buildout (*buildout.cfg*) which installs both requirements::
 
     [buildout]
     extends =
-        http://dist.plone.org/release/4.3.6/versions.cfg
+        plone5.cfg
         solr.cfg
-    parts += instance
 
     [instance]
-    recipe = plone.recipe.zope2instance
-    http-address = 8080
-    user = admin:admin
-    eggs =
-        Plone
+    eggs +=
         collective.solr
-
-    [versions]
-    zope.interface = 4.0.5
-    zc.buildout = 2.3.1
-    setuptools = 8.0.4
 
 Run buildout::
 
   $ python2.7 bootstrap-buildout.py
   $ bin/buildout
 
-Start Plone::
+Start Plone in foreground mode to see that everything is ok::
 
   $ bin/instance fg
 
-Start Solr::
+Start Solr in another terminal in foreground mode ::
 
   $ bin/solr-instance fg
 
 Solr Buildout
 *************
 
-Buildout parts::
+We assume you are more less familiar with the Plone buildout but let's
+analyze the solr buildout configurtion a bit.
+
+First we have two buildout parts::
 
     [buildout]
     parts +=
         solr-download
         solr-instance
 
-Base Solr Settings::
+As the name suggests *solr-download* gets the full Solr package from
+the official download server and unpacks it.
+The part *solr-instance* is for configuring Solr. Let's continue with the
+details.
+
+The base Solr settings specify the host (usually localhost or 0.0.0.0), the
+port (8983 is the standard port of Solr) and two Java parameters for specifying 
+lower and upper memory limit. More is usually better. If you want a rough idea
+on how much memory you should use follow the guidelines found in this article:
+https://lucidworks.com/blog/2011/09/14/estimating-memory-and-storage-for-lucenesolr/ ::
 
     [settings]
     solr-host = 127.0.0.1
@@ -64,7 +71,12 @@ Base Solr Settings::
     solr-min-ram = 128M
     solr-max-ram = 256M
 
-Solr Download::
+There is nothing fancy in the Solr download part. It takes an URL to the Solr
+binary and a md5 sum for verification. 
+
+.. note At time of writing the latest working version of Solr was 4.10.x
+
+It looks like this in *solr.cfg*::
 
     [solr-download]
     recipe = hexagonit.recipe.download
@@ -72,7 +84,9 @@ Solr Download::
     url = https://archive.apache.org/dist/lucene/solr/4.10.4/solr-4.10.4.tgz
     md5sum = 8ae107a760b3fc1ec7358a303886ca06
 
-Solr Instance::
+The Solr instance part is more complicated. It provides a subset of many,
+many configuration options of Solr and the possibility to define the
+schema of the index::
 
     [solr-instance]
     recipe = collective.recipe.solrinstance
@@ -80,14 +94,12 @@ Solr Instance::
     host = ${settings:solr-host}
     port = ${settings:solr-port}
     basepath = /solr
-    # autoCommitMaxTime = 900000
     max-num-results = 500
     section-name = SOLR
     unique-key = UID
     logdir = ${buildout:directory}/var/solr
     default-search-field = default
     default-operator = and
-    unique-key = UID
     java_opts =
       -Dcom.sun.management.jmxremote
       -Djava.rmi.server.hostname=127.0.0.1
@@ -97,6 +109,28 @@ Solr Instance::
       -server
       -Xms${settings:solr-min-ram}
       -Xmx${settings:solr-max-ram}
+
+Let's analyze them one by one ::
+
+    solr-location = ${solr-download:location}
+
+Specify the location of Solr, dowloaded with the previous part. ::
+
+    host = ${settings:solr-host}
+    port = ${settings:solr-port}
+    basepath = /solr
+
+Base configuration for running Solr referencing previously defined settings.
+With this configuration it is possible to access Solr in a browser with the
+following URL: http://localhost:8983/solr ::
+
+    section-name = SOLR
+
+zope.conf ::
+    <product-config ${part:section-name}>
+        address ${part:host}:${part:port}
+        basepath ${part:basepath}
+    </product-config>
 
 Index::
 

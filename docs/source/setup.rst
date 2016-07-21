@@ -123,16 +123,28 @@ Specify the location of Solr, dowloaded with the previous part. ::
 Base configuration for running Solr referencing previously defined settings.
 With this configuration it is possible to access Solr in a browser with the
 following URL: http://localhost:8983/solr ::
+The section-name defines the name which can be used to reflect custom address
+and/or basepath settings in zope.conf.::
 
     section-name = SOLR
 
-zope.conf ::
+It follows the following pattern in *zope.conf* If you use standard settings
+no changes in *zope.conf* are necessary. ::
+
     <product-config ${part:section-name}>
         address ${part:host}:${part:port}
         basepath ${part:basepath}
     </product-config>
 
-Index::
+.. note: Another easy way to use different hosts on dev, stage and production
+   machines is to define a host alias in /etc/hosts
+
+Like the Zope catalog the Solr index has a schema consisting of index and metadata fields.
+You can think of index fields as something you can use for querying / searching
+and metadata something you return as result list.
+Solr defines its schema in a big XML schema.xml. There is a section in the
+*collective.recipe.solrinstance* which gives you access to the most common
+configuration options in a buildout way::
 
     index =
         name:allowedRolesAndUsers   type:string stored:false multivalued:true

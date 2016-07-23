@@ -13,6 +13,7 @@ Contents:
    :maxdepth: 2
 
    setup.rst
+   first-steps.rst
    solr-gui.rst
    collective-solr.rst
    solr-configuration.rst

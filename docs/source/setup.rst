@@ -177,22 +177,63 @@ configuration options in a buildout way::
         name:Type                   type:string stored:true
         name:UID                    type:string stored:true required:true
 
-
 - name: Name of the field
-- type: Type of the field (e.g. "string", "text")
+- type: Type of the field (e.g. "string", "text", "date", "boolean")
 - indexed: searchable
 - stored: returned as metadata
 - copyfield: copy content to another field, e.g. copy title, description, subject and SearchableText to default.
 
+For a complete list of schema configuration options refer to the documentation of Solr.
 https://wiki.apache.org/solr/SchemaXml#Common_field_options
+
+This is the bare minimum for configuring Solr. There are more options supported by the buildout
+recipe *collective.recipe.solrinstance* and even more by Solr itself. Most notably are the custom
+extensions for *schema.xml* and *solrconfig.xml*
+
+TBD
+
+or even a custom location for this main configuration files. ::
+
+TBD
+
+After running the buildout, which downloads and configures Solr and Plone we are ready to fire
+both servers. 
 
 Plone and Solr
 **************
 
-Activate Solr in Plone::
+To activate Solr in Plone *collective.solr* needs to be activated as an addon.
+Look at TBD ::
 
-- Create Plone instance with collective.solr installed
-- Go to: "Configuration" -> "Solr Settings"
-- Check: "Active", click "Save"
-- Go to: http://localhost:8080/Plone/@@solr-maintenance/reindex
-- Search for "Plone"
+Activating the Solr addon adds a configuration page to the controlpanel.
+It can be accessed via <PORTAL_URL>/@@solr-settings    # Check TBD
+or via "Configuration" -> "Solr Settings"
+
+Check: "Active", click "Save"
+
+Activating Solr in the controlpanel activates a patch of Plones indexing
+and search methods to use Solr for indexing and querying.
+
+.. note:: Note that ZCatalog is not replaced but Solr is *additionally* used
+   for indexing and searching.
+
+TBD Introduction to the configuration options
+
+With Solr activated  searching in Plone works like the following:
+
+ - Search contains one of the fields set es required (which is normally
+   the fulltext field *SearchableText*) -> Solr results are returned
+
+ - Search does not contain all fields marked as required -> ZCatalog
+   results are returned. Which is the case for rendering the navigation,
+   folder contents, etc.
+
+ - The search contains the stanza *use_solr=True*. -> Solr results are
+   returned independent of the required fields.
+
+
+Then you are ready for your first search. Search for *Plone*. You should
+get the frontpage as result which is not super awsome at the first
+place because we have this without Solr too but it is the first step
+in (TBD nutzen) the full power of Solr.
+

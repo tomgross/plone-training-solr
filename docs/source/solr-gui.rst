@@ -1,15 +1,23 @@
-Solr GUI and Query
-------------------------------------------------------------------------------
+Solr GUI and Query Syntax
+----------------------------------
+
+In the next part we will take a closer look the the search GUI of Solr
+and its query syntax.
 
 Access Solr Gui
 ***************
 
-- Go to: http://localhost:8983/solr/#/
-- Select Core "collection1"
-- Go to: "Schema Browser"
-- Select "Title"
-- Click: "Load Term Info"
-- Click on term "nachrichten"
+Solr is a REST based wrapper around the Java lucene index. It comes with
+its own web GUI. It it possible to access all of the SOLR API via REST and
+most of this functionality is exposed via its web GUI. To test it out, do the
+following. :
+
+ - Go to: http://localhost:8983/solr/#/
+ - Select Core "collection1"
+ - Go to: "Schema Browser"
+ - Select "fullname"
+ - Click: "Load Term Info"
+ - Click on term "<fullname>"
 
 Solr Query
 **********
@@ -79,10 +87,17 @@ Proximity Search::
 
     "'apache solr'2"
 
+Faceting
+**************************
 
-Questions
-*********
+TBD
 
-- What do we get by using Solr instead of the Plone search?
-- Why don't we query Solr directly in Plone?
-- What does collective.solr do?
+
+Search GUIs
+**************************
+
+ - c.solr ootb
+
+ - eea.facetednavigation
+
+ - custom

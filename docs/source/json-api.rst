@@ -1,30 +1,6 @@
 collective.solr JSON API
 ------------------------------------------------------------------------------
 
-Checkout json-api branch of collective.solr.
-
-buildout.cfg::
-
-    [buildout]
-    ...
-    extensions = mr.developer
-    auto-checkout = collective.solr
-
-    ...
-
-    [sources]
-    collective.solr = git https://github.com/collective/collective.solr.git pushurl=git@github.com:collective/collective.solr.git branch=json-api
-
-Run buildout::
-
-  $ bin/buildout
-
-Start Plone and Solr::
-
-  $ bin/instance fg
-  $ bin/solr-instance fg
-
-
 JSON Search API
 ***************
 

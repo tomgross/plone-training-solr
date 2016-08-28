@@ -19,6 +19,8 @@ Contents:
    solr-configuration.rst
    json-api.rst
    solr-testing.rst
+   production-setups.rst
+   advanced-topics.rst
 
 
 ==================
